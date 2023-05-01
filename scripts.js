@@ -88,6 +88,7 @@ const novoItem = async () => {
     if (input_num_parcelas === '') {
       input_num_parcelas = 1;
     }
+    
     let novo_item = await postItem(input_descricao, input_categoria, input_subcategoria,
                                    input_valor, input_num_parcelas);
     inserirItemInterface(novo_item.id, novo_item.descricao, novo_item.categoria,
