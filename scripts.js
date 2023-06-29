@@ -10,8 +10,8 @@ const getLista = async () => {
   })
     .then((response) => response.json())
     .then((data) => {
-      data.pagamentos.forEach(item => inserirItemInterface(item.id, item.descricao, item.categoria,
-                                                           item.subcategoria, item.valor, item.num_parcelas,
+      data.pagamentos.forEach(item => inserirItemInterface(item.id, item.description, item.category,
+                                                           item.subcategory, item.value, item.num_parcelas,
                                                            item.data_insercao));
       conectarFuncoesDeRemocaoAosBotoes();
     })
@@ -35,7 +35,7 @@ const atualizarSomaPagamentos = async () => {
   })
     .then((response) => response.json())
     .then((data) => {
-      let soma_pagamentos = document.getElementById('soma-pagamentos');
+      let soma_pagamentos = document.getElementById('payments-sum');
       soma_pagamentos.textContent = data.soma_pagamentos.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
     })
     .catch((error) => {
@@ -50,11 +50,11 @@ const atualizarSomaPagamentos = async () => {
   --------------------------------------------------------------------------------------
 */
 const limparFormulario = () => {
-  document.getElementById("novaDescricao").value = "";
-  document.getElementById("novaCategoria").value = "";
-  document.getElementById("novaSubcategoria").value = "";
-  document.getElementById("novoValor").value = "";
-  document.getElementById("novoNumParcelas").value = "";
+  document.getElementById("newDescription").value = "";
+  document.getElementById("newCategory").value = "";
+  document.getElementById("newSubcategory").value = "";
+  document.getElementById("newValue").value = "";
+  document.getElementById("newNbInstallments").value = "";
 }
 
 
@@ -71,28 +71,28 @@ getLista();
   (com inserirItemInterface()), e depois no banco do servidor (com postItem())
   --------------------------------------------------------------------------------------
 */
-const novoItem = async () => {
-  let input_descricao = document.getElementById("novaDescricao").value;
-  let input_categoria = document.getElementById("novaCategoria").value;
-  let input_subcategoria = document.getElementById("novaSubcategoria").value;
-  let input_valor = document.getElementById("novoValor").value;
-  let input_num_parcelas = document.getElementById("novoNumParcelas").value;
+const newItem = async () => {
+  let input_description = document.getElementById("newDescription").value;
+  let input_category = document.getElementById("newCategory").value;
+  let input_subcategory = document.getElementById("newSubcategory").value;
+  let input_value = document.getElementById("newValue").value;
+  let input_num_parcelas = document.getElementById("newNbInstallments").value;
 
-  if (input_descricao === '') {
-    alert("Informe a 'Descrição' do pagamento!");
-  } else if (input_valor === '') {
+  if (input_description === '') {
+    alert("Informe a 'Description' do pagamento!");
+  } else if (input_value === '') {
     alert("Informe o 'Valor' do pagamento!");
-  } else if (isNaN(input_valor) || (isNaN(input_num_parcelas) && input_num_parcelas != '')) {
+  } else if (isNaN(input_value) || (isNaN(input_num_parcelas) && input_num_parcelas != '')) {
     alert("'Valor' e 'Número de parcelas' devem ser valores numéricos!");
   } else {
     if (input_num_parcelas === '') {
       input_num_parcelas = 1;
     }
 
-    let novo_item = await postItem(input_descricao, input_categoria, input_subcategoria,
-                                   input_valor, input_num_parcelas);
-    inserirItemInterface(novo_item.id, novo_item.descricao, novo_item.categoria,
-                         novo_item.subcategoria, novo_item.valor, novo_item.num_parcelas,
+    let novo_item = await postItem(input_description, input_category, input_subcategory,
+                                   input_value, input_num_parcelas);
+    inserirItemInterface(novo_item.id, novo_item.description, novo_item.category,
+                         novo_item.subcategory, novo_item.value, novo_item.num_parcelas,
                          novo_item.data_insercao);
     conectarFuncoesDeRemocaoAosBotoes();
     atualizarSomaPagamentos();
@@ -106,12 +106,12 @@ const novoItem = async () => {
   Função para adicionar novo pagamento no banco do servidor, via requisição POST
   --------------------------------------------------------------------------------------
 */
-const postItem = async (descricao, categoria, subcategoria, valor, num_parcelas) => {
+const postItem = async (description, category, subcategory, value, num_parcelas) => {
   const formData = new FormData();
-  formData.append('descricao', descricao);
-  formData.append('categoria', categoria);
-  formData.append('subcategoria', subcategoria);
-  formData.append('valor', valor);
+  formData.append('description', description);
+  formData.append('category', category);
+  formData.append('subcategory', subcategory);
+  formData.append('value', value);
   formData.append('num_parcelas', num_parcelas);
   let novo_pagamento = {};
 
@@ -137,19 +137,19 @@ const postItem = async (descricao, categoria, subcategoria, valor, num_parcelas)
   Função para inserir novo pagamento na interface
   --------------------------------------------------------------------------------------
 */
-const inserirItemInterface = (id, desricao, categoria, subcategoria, 
-                              valor, num_parcelas, data_insercao) => {
-  let table = document.getElementById('tabela-pagamentos');
+const inserirItemInterface = (id, desricao, category, subcategory, 
+                              value, num_parcelas, data_insercao) => {
+  let table = document.getElementById('table-payments');
   let row = table.insertRow();
-  const item = [id, desricao, categoria, subcategoria,
-                valor, num_parcelas, data_insercao];
+  const item = [id, desricao, category, subcategory,
+                value, num_parcelas, data_insercao];
   const row_length = item.length;
   const Atributos = Object.freeze({
     Id: 0, 
     Desricao: 1,
-    Categoria: 2,
-    Subcategoria: 3,
-    Valor: 4,
+    Category: 2,
+    Subcategory: 3,
+    Value: 4,
     NumParcelas: 5,
     DataInsercao: 6
   });
@@ -160,7 +160,7 @@ const inserirItemInterface = (id, desricao, categoria, subcategoria,
     var cel = row.insertCell(nth_atributo);
     const valor_atributo = item[nth_atributo];
 
-    if (nth_atributo === Atributos.Valor) {
+    if (nth_atributo === Atributos.Value) {
       cel.textContent = valor_atributo.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
     } else if (nth_atributo === Atributos.DataInsercao) {
       const dateObj = new Date(valor_atributo);
@@ -187,7 +187,7 @@ const inserirItemInterface = (id, desricao, categoria, subcategoria,
 */
 const inserirBotaoRemoverItem = (parent) => {
   let img = document.createElement("img");
-  img.className = "bt-remover";
+  img.className = "bt-delete";
   img.src = "./img/delete.png";
   parent.appendChild(img);
 }
@@ -200,7 +200,7 @@ const inserirBotaoRemoverItem = (parent) => {
   --------------------------------------------------------------------------------------
 */
 const conectarFuncoesDeRemocaoAosBotoes = () => {
-  let bts_remover = document.getElementsByClassName("bt-remover");
+  let bts_remover = document.getElementsByClassName("bt-delete");
   let i;
   for (i = 0; i < bts_remover.length; i++) {
     bts_remover[i].onclick = function () {

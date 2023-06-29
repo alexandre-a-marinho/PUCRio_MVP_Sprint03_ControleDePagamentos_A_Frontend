@@ -1,9 +1,9 @@
-# Front-end do app "Controle de Pagamentos"
-MVP da primeira Sprint da pós graduação em Engenharia de Software da PUC-Rio (**MVP Sprint 01**)
+# Front-end of the "Payments Control" app
+MVP of the first Sprint of the graduate program in Software Engineering at PUC-Rio (**MVP Sprint 01**)
 
-Autor: Alexandre Alves Marinho
+Author: Alexandre Alves Marinho
 
 ---
-## Como executar
+## How to run
 
-Basta fazer o download do projeto e abrir o arquivo index.html no seu browser.
+Just download the project and open the index.html file in your browser.

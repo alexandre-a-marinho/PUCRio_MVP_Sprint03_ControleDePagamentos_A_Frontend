@@ -70,7 +70,7 @@ hr.rounded {
     color: white;
 }
 
-#analise {
+#analysis {
     margin-top: 60px;
 }
 
@@ -104,26 +104,26 @@ table {
     color: white;
 }
 
-#lixeira {
+#trash {
     width: 15px;
     height: 15px;
 }
 
-.bt-remover {
+.bt-delete {
     width: 13px;
     height: 13px;
     cursor: pointer;
 }
 
-#tabela-pagamentos tr:nth-child(odd):not(tr.header-row) {
+#table-payments tr:nth-child(odd):not(tr.header-row) {
     background-color: #eee;
 }
 
-#tabela-pagamentos tr:not(tr.header-row):hover {
+#table-payments tr:not(tr.header-row):hover {
     background: #d17f0b51; /*gold 50% opacity*/
 }
 
-#tabela-pagamentos td:nth-child(8):hover {
+#table-payments td:nth-child(8):hover {
     background: rgb(0, 0, 0);
 }
 
@@ -131,19 +131,19 @@ th.id {
     width: 5%;
 }
 
-th.descricao {
+th.description {
     width: 35%;
 }
 
-th.valor {
+th.value {
     width: 5%;
 }
 
-th.parcelas {
+th.installments {
     width: 5%;
 }
 
-th.lixeira, td:nth-child(8) {
+th.trash, td:nth-child(8) {
     width: 1%;
     text-align: center;
 }
