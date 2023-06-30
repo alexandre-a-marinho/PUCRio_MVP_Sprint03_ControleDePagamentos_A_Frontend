@@ -1,42 +1,42 @@
 /*
   --------------------------------------------------------------------------------------
-  Função para obter a lista de pagamentos existentes do banco do servidor, via requisição GET
+  Function to obtain the list of existing payments from the server database, via GET request
   --------------------------------------------------------------------------------------
 */
-const getLista = async () => {
-  let url = 'http://127.0.0.1:5000/pagamentos';
+const getList = async () => {
+  let url = 'http://127.0.0.1:5000/payments';
   await fetch(url, {
     method: 'get',
   })
     .then((response) => response.json())
     .then((data) => {
-      data.pagamentos.forEach(item => inserirItemInterface(item.id, item.description, item.category,
-                                                           item.subcategory, item.value, item.num_parcelas,
-                                                           item.data_insercao));
-      conectarFuncoesDeRemocaoAosBotoes();
+      data.payments.forEach(item => insertItemInterface(item.id, item.description, item.category,
+                                                        item.subcategory, item.value, item.nb_installments,
+                                                        item.insertion_date));
+      connectDeleteFunctionsToButtons();
     })
     .catch((error) => {
       console.error('Error:', error);
     });
 
-  atualizarSomaPagamentos();
+  updatePaymentsSum();
 }
 
 
 /*
   --------------------------------------------------------------------------------------
-  Função para atualizar a soma dos valores dos pagamentos, via requisição GET
+  Function to update the sum of payment values, via GET request
   --------------------------------------------------------------------------------------
 */
-const atualizarSomaPagamentos = async () => {
-  let url = 'http://127.0.0.1:5000/soma_pagamentos';
+const updatePaymentsSum = async () => {
+  let url = 'http://127.0.0.1:5000/payments_sum';
   fetch(url, {
     method: 'get'
   })
     .then((response) => response.json())
     .then((data) => {
-      let soma_pagamentos = document.getElementById('payments-sum');
-      soma_pagamentos.textContent = data.soma_pagamentos.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+      let payments_sum = document.getElementById('payments-sum');
+      payments_sum.textContent = data.payments_sum.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
     })
     .catch((error) => {
       console.error('Error:', error);
@@ -46,10 +46,10 @@ const atualizarSomaPagamentos = async () => {
 
 /*
   --------------------------------------------------------------------------------------
-  Função para limpar o formulário de inserção de novo pagamento
+  Function to clear the "new payment" insertion form
   --------------------------------------------------------------------------------------
 */
-const limparFormulario = () => {
+const cleanForm = () => {
   document.getElementById("newDescription").value = "";
   document.getElementById("newCategory").value = "";
   document.getElementById("newSubcategory").value = "";
@@ -60,15 +60,16 @@ const limparFormulario = () => {
 
 /*
   --------------------------------------------------------------------------------------
-  Chamada da função para carregamento inicial da tabela de pagamentos da interface
+  Function call for initial loading of the UI payments table
   --------------------------------------------------------------------------------------
 */
-getLista();
+getList();
+
 
 /*
   --------------------------------------------------------------------------------------
-  Função para inserir novo pagamento, primeiro na interface
-  (com inserirItemInterface()), e depois no banco do servidor (com postItem())
+  Function to insert new payment, first in the interface
+  (with insertItemInterface()), and then on the server bank (with postItem())
   --------------------------------------------------------------------------------------
 */
 const newItem = async () => {
@@ -76,116 +77,113 @@ const newItem = async () => {
   let input_category = document.getElementById("newCategory").value;
   let input_subcategory = document.getElementById("newSubcategory").value;
   let input_value = document.getElementById("newValue").value;
-  let input_num_parcelas = document.getElementById("newNbInstallments").value;
+  let input_nb_installments = document.getElementById("newNbInstallments").value;
 
   if (input_description === '') {
-    alert("Informe a 'Description' do pagamento!");
+    alert("Payment 'Description' field is mandatory!");
   } else if (input_value === '') {
-    alert("Informe o 'Valor' do pagamento!");
-  } else if (isNaN(input_value) || (isNaN(input_num_parcelas) && input_num_parcelas != '')) {
-    alert("'Valor' e 'Número de parcelas' devem ser valores numéricos!");
+    alert("Payment 'Value' field is mandatory!");
+  } else if (isNaN(input_value) || (isNaN(input_nb_installments) && input_nb_installments != '')) {
+    alert("'Value' e 'Number of installments' fields accept only numeric values!");
   } else {
-    if (input_num_parcelas === '') {
-      input_num_parcelas = 1;
+    if (input_nb_installments === '') {
+      input_nb_installments = 1;
     }
 
-    let novo_item = await postItem(input_description, input_category, input_subcategory,
-                                   input_value, input_num_parcelas);
-    inserirItemInterface(novo_item.id, novo_item.description, novo_item.category,
-                         novo_item.subcategory, novo_item.value, novo_item.num_parcelas,
-                         novo_item.data_insercao);
-    conectarFuncoesDeRemocaoAosBotoes();
-    atualizarSomaPagamentos();
-    alert("Pagamento adicionado!");
+    let new_item = await postItem(input_description, input_category, input_subcategory,
+                                  input_value, input_nb_installments);
+    insertItemInterface(new_item.id, new_item.description, new_item.category,
+                        new_item.subcategory, new_item.value, new_item.nb_installments,
+                        new_item.insertion_date);
+    connectDeleteFunctionsToButtons();
+    updatePaymentsSum();
+    alert("New payment added!");
   }
 }
 
 
 /*
   --------------------------------------------------------------------------------------
-  Função para adicionar novo pagamento no banco do servidor, via requisição POST
+  Function to add new payment in the server database, via POST request
   --------------------------------------------------------------------------------------
 */
-const postItem = async (description, category, subcategory, value, num_parcelas) => {
+const postItem = async (description, category, subcategory, value, nb_installments) => {
   const formData = new FormData();
   formData.append('description', description);
   formData.append('category', category);
   formData.append('subcategory', subcategory);
   formData.append('value', value);
-  formData.append('num_parcelas', num_parcelas);
-  let novo_pagamento = {};
+  formData.append('nb_installments', nb_installments);
+  let new_payment = {};
 
-  let url = 'http://127.0.0.1:5000/pagamento';
+  let url = 'http://127.0.0.1:5000/payment';
   await fetch(url, {
     method: 'post',
     body: formData
   })
     .then((response) => response.json())
     .then((data) => {
-      novo_pagamento = data;
+      new_payment = data;
     })
     .catch((error) => {
       console.error('Error:', error);
     });
 
-  return novo_pagamento;
+  return new_payment;
 }
 
 
 /*
   --------------------------------------------------------------------------------------
-  Função para inserir novo pagamento na interface
+  Function to insert new payment in the interface
   --------------------------------------------------------------------------------------
 */
-const inserirItemInterface = (id, desricao, category, subcategory, 
-                              value, num_parcelas, data_insercao) => {
+const insertItemInterface = (id, description, category, subcategory, 
+                             value, nb_installments, insertion_date) => {
   let table = document.getElementById('table-payments');
   let row = table.insertRow();
-  const item = [id, desricao, category, subcategory,
-                value, num_parcelas, data_insercao];
+  const item = [id, description, category, subcategory,
+                value, nb_installments, insertion_date];
   const row_length = item.length;
-  const Atributos = Object.freeze({
+  const attributes = Object.freeze({
     Id: 0, 
-    Desricao: 1,
+    Description: 1,
     Category: 2,
     Subcategory: 3,
     Value: 4,
-    NumParcelas: 5,
-    DataInsercao: 6
+    NbInstallments: 5,
+    InsertionDate: 6
   });
 
-  // Insere células correspondedntes a cada atributo numa linha da tabela de
-  // pagamentos da interface
-  for (var nth_atributo = 0; nth_atributo < row_length; nth_atributo++) {
-    var cel = row.insertCell(nth_atributo);
-    const valor_atributo = item[nth_atributo];
+  // Inserts cells corresponding to each attribute in a row of the UI payments table
+  for (var nth_attribute = 0; nth_attribute < row_length; nth_attribute++) {
+    var cel = row.insertCell(nth_attribute);
+    const attribute_value = item[nth_attribute];
 
-    if (nth_atributo === Atributos.Value) {
-      cel.textContent = valor_atributo.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
-    } else if (nth_atributo === Atributos.DataInsercao) {
-      const dateObj = new Date(valor_atributo);
+    if (nth_attribute === attributes.Value) {
+      cel.textContent = attribute_value.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+    } else if (nth_attribute === attributes.InsertionDate) {
+      const dateObj = new Date(attribute_value);
       const isoDateStr = dateObj.toISOString();
-      const yyyyMmDd = isoDateStr.slice(0, 10).replace(/-/g, '/'); // extraindo yyyy/mm/dd
+      const yyyyMmDd = isoDateStr.slice(0, 10).replace(/-/g, '/'); // extracting yyyy/mm/dd
       cel.textContent = yyyyMmDd;
     } else {
-      cel.textContent = valor_atributo;
+      cel.textContent = attribute_value;
     }
   }
 
-  // Insere botão de 'remoção' no fim de cada linha da tabela de pagamentos
-  // da interface
-  inserirBotaoRemoverItem(row.insertCell(-1));
-  limparFormulario();
+  // Inserts 'delete' button at the end of each line of the UI payments table
+  insertDeleteItemButton(row.insertCell(-1));
+  cleanForm();
 }
 
 
 /*
   --------------------------------------------------------------------------------------
-  Função para criar um botão 'remover' em cada linha da tabela de pagamentos
-  da interface
+  Function to create a 'delete' button on each line of the UI payments table
   --------------------------------------------------------------------------------------
 */
-const inserirBotaoRemoverItem = (parent) => {
+const insertDeleteItemButton = (parent) => {
   let img = document.createElement("img");
   img.className = "bt-delete";
   img.src = "./img/delete.png";
@@ -195,22 +193,21 @@ const inserirBotaoRemoverItem = (parent) => {
 
 /*
   --------------------------------------------------------------------------------------
-  Cria função para remover pagamento e a conecta a cada botão 'remover'
-  da interface
+  Create function to delete payment and connect it to each 'delete' button in the interface
   --------------------------------------------------------------------------------------
 */
-const conectarFuncoesDeRemocaoAosBotoes = () => {
-  let bts_remover = document.getElementsByClassName("bt-delete");
+const connectDeleteFunctionsToButtons = () => {
+  let delete_button = document.getElementsByClassName("bt-delete");
   let i;
-  for (i = 0; i < bts_remover.length; i++) {
-    bts_remover[i].onclick = function () {
+  for (i = 0; i < delete_button.length; i++) {
+    delete_button[i].onclick = function () {
       let div = this.parentElement.parentElement;
       const item_id = div.getElementsByTagName('td')[0].innerHTML;
-      if (confirm("Você tem certeza?")) {
+      if (confirm("Are you sure? Confirm deletion?")) {
         div.remove();
-        removeItem(item_id);
-        alert("Removido!");
-        atualizarSomaPagamentos();
+        deleteItem(item_id);
+        alert("Payment deleted!");
+        updatePaymentsSum();
       }
     }
   }
@@ -219,12 +216,12 @@ const conectarFuncoesDeRemocaoAosBotoes = () => {
 
 /*
   --------------------------------------------------------------------------------------
-  Função para remover um pagamento do banco do servidor, via requisição DELETE
+  Function to delete a payment from the server database, via DELETE request
   --------------------------------------------------------------------------------------
 */
-const removeItem = (item_id) => {
+const deleteItem = (item_id) => {
   console.log(item_id);
-  let url = 'http://127.0.0.1:5000/pagamento?id=' + item_id;
+  let url = 'http://127.0.0.1:5000/payment?id=' + item_id;
   fetch(url, {
     method: 'delete'
   })
