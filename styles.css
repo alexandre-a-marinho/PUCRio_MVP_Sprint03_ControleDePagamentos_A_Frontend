@@ -139,6 +139,10 @@ th.value {
     width: 5%;
 }
 
+th.exchange_value {
+    width: 5%;
+}
+
 th.installments {
     width: 5%;
 }

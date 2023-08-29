@@ -1,9 +1,19 @@
 /*
   --------------------------------------------------------------------------------------
+  Global Variables
+  --------------------------------------------------------------------------------------
+*/
+let exchange_rate;
+
+
+/*
+  --------------------------------------------------------------------------------------
   Function to obtain the list of existing payments from the server database, via GET request
   --------------------------------------------------------------------------------------
 */
 const getList = async () => {
+  await updateExchangeRate();
+
   let url = 'http://127.0.0.1:5000/payments';
   await fetch(url, {
     method: 'get',
@@ -60,11 +70,30 @@ const cleanForm = () => {
 
 /*
   --------------------------------------------------------------------------------------
-  Function call for initial loading of the UI payments table
+  Function update currency exchange rate
   --------------------------------------------------------------------------------------
 */
-getList();
+const updateExchangeRate = async () => {
+  let exchangerates_api_key = "2e3a54fcfa6f2b4bfd89d5ade4b20227";
 
+  const url = 'http://api.exchangeratesapi.io/v1/latest?access_key=' + exchangerates_api_key;
+  await fetch(url, {
+    method: 'get'
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.rates) {
+        const exchange_rate_eur_brl = data.rates.BRL;
+        const exchange_rate_eur_usd = data.rates.USD;
+        exchange_rate = (1 / exchange_rate_eur_brl) * exchange_rate_eur_usd;
+      } else if (data.error.code === "https_access_restricted") {
+        alert(data.error.message);
+      }
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+}
 
 /*
   --------------------------------------------------------------------------------------
@@ -73,6 +102,8 @@ getList();
   --------------------------------------------------------------------------------------
 */
 const newItem = async () => {
+  await updateExchangeRate();
+
   let input_description = document.getElementById("newDescription").value;
   let input_category = document.getElementById("newCategory").value;
   let input_subcategory = document.getElementById("newSubcategory").value;
@@ -140,10 +171,11 @@ const postItem = async (description, category, subcategory, value, nb_installmen
 */
 const insertItemInterface = (id, description, category, subcategory, 
                              value, nb_installments, insertion_date) => {
+  const exchange_value = value * exchange_rate;
   let table = document.getElementById('table-payments');
   let row = table.insertRow();
   const item = [id, description, category, subcategory,
-                value, nb_installments, insertion_date];
+                value, exchange_value, nb_installments, insertion_date];
   const row_length = item.length;
   const attributes = Object.freeze({
     Id: 0, 
@@ -151,8 +183,9 @@ const insertItemInterface = (id, description, category, subcategory,
     Category: 2,
     Subcategory: 3,
     Value: 4,
-    NbInstallments: 5,
-    InsertionDate: 6
+    Exchange_Value: 5,
+    NbInstallments: 6,
+    InsertionDate: 7
   });
 
   // Inserts cells corresponding to each attribute in a row of the UI payments table
@@ -162,6 +195,8 @@ const insertItemInterface = (id, description, category, subcategory,
 
     if (nth_attribute === attributes.Value) {
       cel.textContent = attribute_value.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+    } else if (nth_attribute === attributes.Exchange_Value) {
+      cel.textContent = attribute_value.toLocaleString('en-US', {style: 'currency', currency: 'USD'}); // FIXME: get correct symbols for the chosen currency, euros, dolars, etc
     } else if (nth_attribute === attributes.InsertionDate) {
       const dateObj = new Date(attribute_value);
       const isoDateStr = dateObj.toISOString();
@@ -230,3 +265,11 @@ const deleteItem = (item_id) => {
       console.error('Error:', error);
     });
 }
+
+
+/*
+  --------------------------------------------------------------------------------------
+  Function call for initial loading of the UI payments table
+  --------------------------------------------------------------------------------------
+*/
+getList();
