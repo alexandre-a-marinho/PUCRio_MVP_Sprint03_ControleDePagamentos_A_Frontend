@@ -176,28 +176,34 @@ const insertItemInterface = (id, description, category, subcategory,
   let row = table.insertRow();
   const item = [id, description, category, subcategory,
                 value, exchange_value, nb_installments, insertion_date];
-  const row_length = item.length;
+  const row_data_length = item.length;
   const attributes = Object.freeze({
-    Id: 0, 
-    Description: 1,
-    Category: 2,
-    Subcategory: 3,
-    Value: 4,
-    Exchange_Value: 5,
-    NbInstallments: 6,
-    InsertionDate: 7
+    Id: 1, 
+    Description: 2,
+    Category: 3,
+    Subcategory: 4,
+    Value: 5,
+    Exchange_Value: 6,
+    NbInstallments: 7,
+    InsertionDate: 8
   });
 
+  // Inserts 'edition' button at the beginning of each line of the UI payments table
+  insertEditionItemButton(row.insertCell(0));
+  
   // Inserts cells corresponding to each attribute in a row of the UI payments table
-  for (var nth_attribute = 0; nth_attribute < row_length; nth_attribute++) {
-    var cel = row.insertCell(nth_attribute);
-    const attribute_value = item[nth_attribute];
+  for (var cell_idx = 1; cell_idx <= row_data_length; cell_idx++) {
+    var cel = row.insertCell(cell_idx);
 
-    if (nth_attribute === attributes.Value) {
+    // There are 10 cells/columns per row, but only 8 data values from the itens (1st cell is edition button and last cell is delete button)
+    const item_idx = cell_idx - 1;
+    const attribute_value = item[item_idx];
+
+    if (cell_idx === attributes.Value) {
       cel.textContent = attribute_value.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
-    } else if (nth_attribute === attributes.Exchange_Value) {
+    } else if (cell_idx === attributes.Exchange_Value) {
       cel.textContent = attribute_value.toLocaleString('en-US', {style: 'currency', currency: 'USD'}); // FIXME: get correct symbols for the chosen currency, euros, dolars, etc
-    } else if (nth_attribute === attributes.InsertionDate) {
+    } else if (cell_idx === attributes.InsertionDate) {
       const dateObj = new Date(attribute_value);
       const isoDateStr = dateObj.toISOString();
       const yyyyMmDd = isoDateStr.slice(0, 10).replace(/-/g, '/'); // extracting yyyy/mm/dd
@@ -209,6 +215,7 @@ const insertItemInterface = (id, description, category, subcategory,
 
   // Inserts 'delete' button at the end of each line of the UI payments table
   insertDeleteItemButton(row.insertCell(-1));
+
   cleanForm();
 }
 
@@ -228,6 +235,19 @@ const insertDeleteItemButton = (parent) => {
 
 /*
   --------------------------------------------------------------------------------------
+  Function to create a 'edition' button on each line of the UI payments table
+  --------------------------------------------------------------------------------------
+*/
+const insertEditionItemButton = (parent) => {
+  let img = document.createElement("img");
+  img.className = "bt-edition";
+  img.src = "./img/edition.png";
+  parent.appendChild(img);
+}
+
+
+/*
+  --------------------------------------------------------------------------------------
   Create function to delete payment and connect it to each 'delete' button in the interface
   --------------------------------------------------------------------------------------
 */
@@ -237,7 +257,8 @@ const connectDeleteFunctionsToButtons = () => {
   for (i = 0; i < delete_button.length; i++) {
     delete_button[i].onclick = function () {
       let div = this.parentElement.parentElement;
-      const item_id = div.getElementsByTagName('td')[0].innerHTML;
+      const item_id_idx = 1;
+      const item_id = div.getElementsByTagName('td')[item_id_idx].innerHTML;
       if (confirm("Are you sure? Confirm deletion?")) {
         div.remove();
         deleteItem(item_id);

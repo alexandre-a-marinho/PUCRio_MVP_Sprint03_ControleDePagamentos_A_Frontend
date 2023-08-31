@@ -115,6 +115,12 @@ table {
     cursor: pointer;
 }
 
+.bt-edition {
+    width: 13px;
+    height: 13px;
+    cursor: pointer;
+}
+
 #table-payments tr:nth-child(odd):not(tr.header-row) {
     background-color: #eee;
 }
