@@ -24,6 +24,7 @@ const getList = async () => {
                                                         item.subcategory, item.value, item.nb_installments,
                                                         item.insertion_date));
       connectDeleteFunctionsToButtons();
+      connectEditFunctionsToButtons();
     })
     .catch((error) => {
       console.error('Error:', error);
@@ -127,6 +128,7 @@ const newItem = async () => {
                         new_item.subcategory, new_item.value, new_item.nb_installments,
                         new_item.insertion_date);
     connectDeleteFunctionsToButtons();
+    connectEditFunctionsToButtons();
     updatePaymentsSum();
     alert("New payment added!");
   }
@@ -240,7 +242,7 @@ const insertDeleteItemButton = (parent) => {
 */
 const insertEditionItemButton = (parent) => {
   let img = document.createElement("img");
-  img.className = "bt-edition";
+  img.className = "bt-edit";
   img.src = "./img/edition.png";
   parent.appendChild(img);
 }
@@ -256,13 +258,36 @@ const connectDeleteFunctionsToButtons = () => {
   let i;
   for (i = 0; i < delete_button.length; i++) {
     delete_button[i].onclick = function () {
-      let div = this.parentElement.parentElement;
+      let current_row = this.parentElement.parentElement;
       const item_id_idx = 1;
-      const item_id = div.getElementsByTagName('td')[item_id_idx].innerHTML;
+      const item_id = current_row.getElementsByTagName('td')[item_id_idx].innerHTML;
       if (confirm("Are you sure? Confirm deletion?")) {
-        div.remove();
+        current_row.remove();
         deleteItem(item_id);
         alert("Payment deleted!");
+        updatePaymentsSum();
+      }
+    }
+  }
+}
+
+
+/*
+  --------------------------------------------------------------------------------------
+  Create function to edit payment and connect it to each 'edition' button in the interface
+  --------------------------------------------------------------------------------------
+*/
+const connectEditFunctionsToButtons = () => {
+  let edit_button = document.getElementsByClassName("bt-edit");
+  let i;
+  for (i = 0; i < edit_button.length; i++) {
+    edit_button[i].onclick = function () {
+      let current_row = this.parentElement.parentElement;
+      const item_id_idx = 1;
+      const item_id = current_row.getElementsByTagName('td')[item_id_idx].innerHTML;
+      if (confirm("Do you want to edit this item?")) {
+        // TODO: implement edition actions here [MVP3-7]
+        alert("Payment edited!");
         updatePaymentsSum();
       }
     }
