@@ -63,9 +63,27 @@ hr.rounded {
     cursor: pointer;
     transition: 0.3s;
     border-radius:5px;
+    display: 1;
 }
 
 .addBtn:hover {
+    background-color: #d17f0b; /*gold 100% opacity*/
+    color: white;
+}
+
+.editBtn {
+    padding: 10px 10px;
+    background-color: rgb(25, 98, 41);
+    color: white;
+    text-align: center;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius:5px;
+    display: none;
+}
+
+.editBtn:hover {
     background-color: #d17f0b; /*gold 100% opacity*/
     color: white;
 }

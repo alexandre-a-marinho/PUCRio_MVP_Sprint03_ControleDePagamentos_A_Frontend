@@ -76,6 +76,7 @@ const cleanForm = () => {
 */
 const updateExchangeRate = async () => {
   let exchangerates_api_key = "2e3a54fcfa6f2b4bfd89d5ade4b20227";
+  //let exchangerates_api_key = "stub_key_to_avoid_wasting_requests";
 
   const url = 'http://api.exchangeratesapi.io/v1/latest?access_key=' + exchangerates_api_key;
   await fetch(url, {
