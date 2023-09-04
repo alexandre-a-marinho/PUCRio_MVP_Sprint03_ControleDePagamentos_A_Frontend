@@ -4,7 +4,42 @@
   --------------------------------------------------------------------------------------
 */
 let exchange_rate;
+const attributes = Object.freeze({
+  Id: 1, 
+  Description: 2,
+  Category: 3,
+  Subcategory: 4,
+  Value: 5,
+  Exchange_Value: 6,
+  NbInstallments: 7,
+  InsertionDate: 8
+});
 
+
+/*
+  --------------------------------------------------------------------------------------
+  Function to get a payment from the server database, via GET request
+  --------------------------------------------------------------------------------------
+*/
+const getItem = async function (item_id) {
+  console.log(item_id);
+  let item = {};
+  let url = 'http://127.0.0.1:5000/payment?id=' + item_id;
+  await fetch(url, {
+    method: 'get'
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      item.id = data.id;
+      item.description = data.description;
+      item.category = data.category;
+      item.subcategory = data.subcategory;
+      item.value = data.value;
+      item.nb_installments = data.nb_installments;
+    })
+
+  return item;
+}
 
 /*
   --------------------------------------------------------------------------------------
@@ -180,16 +215,6 @@ const insertItemInterface = (id, description, category, subcategory,
   const item = [id, description, category, subcategory,
                 value, exchange_value, nb_installments, insertion_date];
   const row_data_length = item.length;
-  const attributes = Object.freeze({
-    Id: 1, 
-    Description: 2,
-    Category: 3,
-    Subcategory: 4,
-    Value: 5,
-    Exchange_Value: 6,
-    NbInstallments: 7,
-    InsertionDate: 8
-  });
 
   // Inserts 'edition' button at the beginning of each line of the UI payments table
   insertEditionItemButton(row.insertCell(0));
@@ -279,13 +304,31 @@ const connectDeleteFunctionsToButtons = () => {
   --------------------------------------------------------------------------------------
 */
 const connectEditFunctionsToButtons = () => {
-  let edit_button = document.getElementsByClassName("bt-edit");
+  let item_edit_buttons = document.getElementsByClassName("bt-edit");
+  let add_button = document.getElementById("addBtn");
+  let finish_edition_button = document.getElementById("editBtn");
   let i;
-  for (i = 0; i < edit_button.length; i++) {
-    edit_button[i].onclick = function () {
+  for (i = 0; i < item_edit_buttons.length; i++) {
+    item_edit_buttons[i].onclick = async function () {
+
+      // Controls displayed button in edition mode
+      add_button.style.display = "none";
+      finish_edition_button.style.display = "inline";
+      
+      // Get selected item data from table - better to do it from database
+      // FIXME: Somehow get the ID into the "Finish Edition" function, it's necessary for the PUT request call
       let current_row = this.parentElement.parentElement;
-      const item_id_idx = 1;
-      const item_id = current_row.getElementsByTagName('td')[item_id_idx].innerHTML;
+      const row_attributes = current_row.getElementsByTagName('td')
+      const item_id = row_attributes[attributes.Id].innerHTML;
+      let item = await getItem(item_id);
+      
+      // Fill up edition form with selected item data
+      document.getElementById("newDescription").value = item.description;
+      document.getElementById("newCategory").value = item.category;
+      document.getElementById("newSubcategory").value = item.subcategory;
+      document.getElementById("newValue").value = item.value;
+      document.getElementById("newNbInstallments").value = item.nb_installments;
+
       if (confirm("Do you want to edit this item?")) {
         // TODO: implement edition actions here [MVP3-7]
         alert("Payment edited!");

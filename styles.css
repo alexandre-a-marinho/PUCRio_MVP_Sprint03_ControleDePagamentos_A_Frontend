@@ -54,7 +54,7 @@ hr.rounded {
     height: 50px;
 }
 
-.addBtn {
+#addBtn {
     padding: 10px 10px;
     background-color: rgb(35, 32, 24);
     color: white;
@@ -63,15 +63,15 @@ hr.rounded {
     cursor: pointer;
     transition: 0.3s;
     border-radius:5px;
-    display: 1;
+    display: inline;
 }
 
-.addBtn:hover {
+#addBtn:hover {
     background-color: #d17f0b; /*gold 100% opacity*/
     color: white;
 }
 
-.editBtn {
+#editBtn {
     padding: 10px 10px;
     background-color: rgb(25, 98, 41);
     color: white;
@@ -83,7 +83,7 @@ hr.rounded {
     display: none;
 }
 
-.editBtn:hover {
+#editBtn:hover {
     background-color: #d17f0b; /*gold 100% opacity*/
     color: white;
 }
@@ -147,7 +147,7 @@ table {
     background: #d17f0b51; /*gold 50% opacity*/
 }
 
-#table-payments td:nth-child(8):hover {
+#table-payments td:nth-child(10):hover {
     background: rgb(0, 0, 0);
 }
 
