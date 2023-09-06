@@ -95,7 +95,7 @@ const updatePaymentsSum = async () => {
   Function to clear the "new payment" insertion form
   --------------------------------------------------------------------------------------
 */
-const cleanForm = () => {
+const clearForm = () => {
   document.getElementById("newDescription").value = "";
   document.getElementById("newCategory").value = "";
   document.getElementById("newSubcategory").value = "";
@@ -180,13 +180,17 @@ const newItem = async () => {
 */
 const editItem = async () => {
   await updateExchangeRate();
-
+  
   let input_description = document.getElementById("newDescription").value;
   let input_category = document.getElementById("newCategory").value;
   let input_subcategory = document.getElementById("newSubcategory").value;
   let input_value = document.getElementById("newValue").value;
   let input_nb_installments = document.getElementById("newNbInstallments").value;
   let item_id = document.getElementById("editedItemId").value;
+
+  if (!confirm("Confirm the changes to payment #" + item_id + " (" + input_description +")?")) {
+    return;
+  }
 
   if (input_description === '') {
     alert("Payment 'Description' field is mandatory!");
@@ -219,6 +223,7 @@ const editItem = async () => {
     finish_edition_button.style.display = "none";
     id_form.style.display = "none";
     id_form_label.style.display = "none";
+    clearForm();
 
     alert("Payment edited!");
   }
@@ -329,7 +334,7 @@ const insertItemInterface = (id, description, category, subcategory,
   // Inserts 'delete' button at the end of each line of the UI payments table
   insertDeleteItemButton(row.insertCell(-1));
 
-  cleanForm();
+  clearForm();
 }
 
 
@@ -375,6 +380,23 @@ const connectDeleteFunctionsToButtons = () => {
       if (confirm("Are you sure? Confirm deletion?")) {
         current_row.remove();
         deleteItem(item_id);
+
+        // Verifies if deleted item was being edited in edition mode
+        const edited_item_id = document.getElementById("editedItemId").value;
+        const is_edited_item_deleted = (edited_item_id === item_id);
+        if (is_edited_item_deleted) {
+          // Controls displayed interface/buttonsbutton in edition mode // FIXME: transform this into a function
+          let add_button = document.getElementById("addBtn");
+          let finish_edition_button = document.getElementById("editBtn");
+          let id_form = document.getElementById("editedItemId");
+          let id_form_label = document.getElementById("editedItemIdLabel");
+          add_button.style.display = "inline";
+          finish_edition_button.style.display = "none";
+          id_form.style.display = "none";
+          id_form_label.style.display = "none";
+          clearForm();
+        }
+
         alert("Payment deleted!");
         updatePaymentsSum();
       }
@@ -418,12 +440,6 @@ const connectEditFunctionsToButtons = () => {
       document.getElementById("newValue").value = item.value;
       document.getElementById("newNbInstallments").value = item.nb_installments;
       document.getElementById("editedItemId").value = item.id;
-
-      if (confirm("Do you want to edit this item?")) {
-        // TODO: implement edition actions here [MVP3-7]
-        alert("Payment edited!");
-        updatePaymentsSum();
-      }
     }
   }
 }
