@@ -88,6 +88,15 @@ hr.rounded {
     color: white;
 }
 
+#editedItemId {
+    display: none;
+    background: rgb(214, 209, 209);
+}
+
+#editedItemIdLabel {
+    display: none;
+}
+
 #analysis {
     margin-top: 60px;
 }

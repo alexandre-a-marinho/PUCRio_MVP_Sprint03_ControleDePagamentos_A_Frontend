@@ -35,19 +35,28 @@
                 </div>
                 <hr class="rounded">
                 <div class="row mb-2">
-                    <input type="text" id="newDescription" class="form-control rounded" placeholder="*Description:">
+                    <label for="newDescription"><b>Description:</b></label>
+                    <input type="text" id="newDescription" class="form-control rounded" placeholder="*">
                 </div>
                 <div class="row mb-2">
-                    <input type="text" id="newCategory" class="form-control rounded" placeholder="Category:">
+                    <label for="newCategory"><b>Category:</b></label>
+                    <input type="text" id="newCategory" class="form-control rounded" placeholder="">
                 </div>
                 <div class="row mb-2">
-                    <input type="text" id="newSubcategory" class="form-control rounded" placeholder="Subcategory:">
+                    <label for="newSubcategory"><b>Subcategory:</b></label>
+                    <input type="text" id="newSubcategory" class="form-control rounded" placeholder="">
                 </div>
                 <div class="row mb-2">
-                    <input type="number" id="newValue" class="form-control rounded" placeholder="*Value (R$):">
+                    <label for="newValue"><b>Value:</b></label>
+                    <input type="number" id="newValue" class="form-control rounded" placeholder="*(R$):">
                 </div>
                 <div class="row mb-2">
-                    <input type="number" id="newNbInstallments" class="form-control rounded" placeholder="Number of installments:">
+                    <label for="newNbInstallments"><b>Number of Installments:</b></label>
+                    <input type="number" id="newNbInstallments" class="form-control rounded" placeholder="">
+                </div>
+                <div class="row mb-2">
+                    <label for="editedItemId" id="editedItemIdLabel"><b>Id:</b></label>
+                    <input type="number" id="editedItemId" class="form-control rounded" placeholder="" readonly="readonly">
                 </div>
                 <div class="row mb-2" id="form-obs">    
                     <font size="1.5", color="gray">*mandatory</font>
