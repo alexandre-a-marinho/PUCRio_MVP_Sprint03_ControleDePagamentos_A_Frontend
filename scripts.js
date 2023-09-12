@@ -101,6 +101,7 @@ const clearForm = () => {
   document.getElementById("newSubcategory").value = "";
   document.getElementById("newValue").value = "";
   document.getElementById("newNbInstallments").value = "";
+  document.getElementById("editedItemId").value = "";
 }
 
 
@@ -214,13 +215,15 @@ const editItem = async () => {
 
     getList();
 
-    // Controls displayed interface/buttonsbutton in edition mode
+    // Controls displayed interface/buttons in edition mode
     let add_button = document.getElementById("addBtn");
     let finish_edition_button = document.getElementById("editBtn");
+    let cancel_edition_button = document.getElementById("cancelEditBtn");
     let id_form = document.getElementById("editedItemId");
     let id_form_label = document.getElementById("editedItemIdLabel");
     add_button.style.display = "inline";
     finish_edition_button.style.display = "none";
+    cancel_edition_button.style.display = "none";
     id_form.style.display = "none";
     id_form_label.style.display = "none";
     clearForm();
@@ -228,6 +231,30 @@ const editItem = async () => {
     alert("Payment edited!");
   }
 }
+
+
+/*
+  --------------------------------------------------------------------------------------
+  Function to insert new payment, first in the interface
+  (with insertItemInterface()), and then on the server bank (with postItem())
+  --------------------------------------------------------------------------------------
+*/
+const cancelEdition = async () => {
+  // Controls displayed interface/buttons in edition mode
+  let add_button = document.getElementById("addBtn");
+  let finish_edition_button = document.getElementById("editBtn");
+  let cancel_edition_button = document.getElementById("cancelEditBtn");
+  let id_form = document.getElementById("editedItemId");
+  let id_form_label = document.getElementById("editedItemIdLabel");
+  add_button.style.display = "inline";
+  finish_edition_button.style.display = "none";
+  cancel_edition_button.style.display = "none";
+  id_form.style.display = "none";
+  id_form_label.style.display = "none";
+  clearForm();
+  alert("Edition canceled!");
+}
+
 
 
 /*
@@ -388,10 +415,12 @@ const connectDeleteFunctionsToButtons = () => {
           // Controls displayed interface/buttonsbutton in edition mode // FIXME: transform this into a function
           let add_button = document.getElementById("addBtn");
           let finish_edition_button = document.getElementById("editBtn");
+          let cancel_edition_button = document.getElementById("cancelEditBtn");
           let id_form = document.getElementById("editedItemId");
           let id_form_label = document.getElementById("editedItemIdLabel");
           add_button.style.display = "inline";
           finish_edition_button.style.display = "none";
+          cancel_edition_button.style.display = "none";
           id_form.style.display = "none";
           id_form_label.style.display = "none";
           clearForm();
@@ -414,6 +443,7 @@ const connectEditFunctionsToButtons = () => {
   let item_edit_buttons = document.getElementsByClassName("bt-edit");
   let add_button = document.getElementById("addBtn");
   let finish_edition_button = document.getElementById("editBtn");
+  let cancel_edition_button = document.getElementById("cancelEditBtn");
   let id_form = document.getElementById("editedItemId");
   let id_form_label = document.getElementById("editedItemIdLabel");
 
@@ -423,6 +453,7 @@ const connectEditFunctionsToButtons = () => {
       // Controls displayed interface/buttonsbutton in edition mode
       add_button.style.display = "none";
       finish_edition_button.style.display = "inline";
+      cancel_edition_button.style.display = "inline";
       id_form.style.display = "inline";
       id_form_label.style.display = "inline";
       
