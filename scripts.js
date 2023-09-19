@@ -124,6 +124,9 @@ const updateExchangeRate = async () => {
         const exchange_rate_eur_brl = data.rates.BRL;
         const exchange_rate_eur_usd = data.rates.USD;
         exchange_rate = (1 / exchange_rate_eur_brl) * exchange_rate_eur_usd;
+        let exchange_rate_inverse = 1 / exchange_rate;
+        let exchange_rate_ui = document.getElementById('usd-exchange');
+        exchange_rate_ui.textContent = exchange_rate_inverse.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
       } else if (data.error.code === "https_access_restricted") {
         alert(data.error.message + "\n\nPlease use Firefox browser to avoid HTTPS access error!");
       }
