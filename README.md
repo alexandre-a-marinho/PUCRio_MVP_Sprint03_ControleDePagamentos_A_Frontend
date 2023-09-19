@@ -8,11 +8,9 @@ Author: Alexandre Alves Marinho
 This Frontend is making direct access to an external API that provides monetary exchange rates [https://manage.exchangeratesapi.io/dashboard].
 The required access key is embedded in the code, so the usage is transparent to the user.
 
-Attention: However, depending on your browser http protocol configuration, it may not work properly because the free access
-key does not provide https security. If your browser is configured to force https connection even when a http connection is
-required, then the connection will fail. So please adjust your browser accordingly.
-A failure caused by this problem will
-Firefox browser has this configuration turned off by default and is the safest alternative.
+Attention!!! Depending on your browser http protocol configuration, it may not work properly because the API's free access
+key does not provide https access, only http. If your browser is configured to force https connection even when a http connection is required, then the connection will fail. So please adjust your browser accordingly.
+Firefox browser has this configuration turned off by default and is the safest alternative (avoid Chrome and Edge).
 
 ---
 ## How to run (development mode)
